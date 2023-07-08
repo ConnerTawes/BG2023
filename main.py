@@ -1,40 +1,50 @@
 from tkinter import *
-#import game.py
-#import piece.py
 
 
 root = Tk()
 
-board = {}
+root.geometry("800x600")
 
-team1score = 2
-team2score = 3
+team1score = 1
+team2score = 4
 
+def resetScore():
+	team1score = 0
+	team2score = 0
+	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=4, column = 9, columnspan=2)
 
-pieceSquare = True
+def resetGame():
+	root.destroy()
 
-for row in range(8):
-	if row == 5:
-		pieceSquare = False
-	
-	if pieceSquare == False:
-		pieceSquare = True
-	else:
-		pieceSquare = False
-	for col in range(8):
-		if pieceSquare and row not in range(3,5):
-			if row >= 5:
-				board[f'square{row}{col}'] = Button(root, text=str(row) + str(col), bg="red", width=6, height=3, borderwidth=2).grid(row=row, column=col)
-			else:
-				board[f'square{row}{col}'] = Button(root, text=str(row) + str(col), bg="gray", width=6, height=3, borderwidth=2).grid(row=row, column=col)
+def gameBuilder():
+	pieceSquare = True
+	for row in range(1,9):
+		if row == 5:
 			pieceSquare = False
-		else:
-			board[f'square{row}{col}'] = Button(root, text=str(row) + str(col), state=DISABLED, width=6, height=3, borderwidth=2).grid(row=row, column=col)
+		
+		if pieceSquare == False:
 			pieceSquare = True
+		else:
+			pieceSquare = False
+		for col in range(1,9):
+			if pieceSquare and row not in range(4,6):
+				if row >= 6:
+					Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				else:
+					Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				pieceSquare = False
+			else:
+				Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				pieceSquare = True
 
-	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=3, column = 8, columnspan=6)
-	resetGameButton = Button(root, text="Reset Game").grid(row=4, column=8)
-	resetScoreButton = Button(root, text="Reset Score").grid(row=4, column=9)
-
+	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
+	scorePad.grid(row=4, column = 9, columnspan=2)
+	resetGameButton = Button(root, text="Reset Game")
+	resetGameButton.grid(row=5, column=9)
+	resetScoreButton = Button(root, text="Reset Score", command= lambda: [scorePad.grid_forget(), resetScore()])
+	resetScoreButton.grid(row=5, column=10)
+	buffer = Label(root, text=" "*25)
+	buffer.grid(row=0)
+gameBuilder()
 
 root.mainloop()
