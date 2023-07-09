@@ -17,15 +17,13 @@ def resetGame():
 	root.destroy()
 
 def gameBuilder():
-	pieceSquare = True
+	pieceSquare = False
 	for row in range(1,9):
-		if row == 5:
-			pieceSquare = False
 		
-		if pieceSquare == False:
-			pieceSquare = True
-		else:
+		if pieceSquare:
 			pieceSquare = False
+		else:
+			pieceSquare = True
 		for col in range(1,9):
 			if pieceSquare and row not in range(4,6):
 				if row >= 6:
@@ -48,3 +46,93 @@ def gameBuilder():
 gameBuilder()
 
 root.mainloop()
+
+class Piece:
+	rank = "Pawn"
+	def __init__(self, color):
+		self.color = color
+
+	def funk(self):
+  		print("|" + self.color, end="")
+
+redPiece = Piece("Red")
+blackPiece = Piece("Black")
+
+board = [[blackPiece, None, blackPiece, None, blackPiece, None, blackPiece, None],
+		 [None, blackPiece, None, blackPiece, None, blackPiece, None, blackPiece],
+		 [blackPiece, None, blackPiece, None, blackPiece, None, blackPiece, None],
+		 [None, None, None, None, None, None, None, None],
+		 [None, None, None, None, None, None, None, None],
+ 		 [None, redPiece, None, redPiece, None, redPiece, None, redPiece],
+ 		 [redPiece, None, redPiece, None, redPiece, None, redPiece, None],
+ 		 [None, redPiece, None, redPiece, None, redPiece, None, redPiece]]
+
+for i in range (0, 8):
+	for j in range(0,8):
+		if(board[i][j] == None):
+			print("| ", end="")
+		else:
+			board[i][j].funk()
+	print("")
+
+def CanMove(row, col, piece):
+	if(piece.rank == "Pawn"):
+		if(piece.color == "Black"):
+			# Code for Black piece here
+			if(row + 1 > 8):
+				if(col - 1 >= 0 and col + 1 < 8):
+
+					# If both down left and down right of black piece are empty
+					if((board[row + 1][col - 1] == None) and (board[row + 1][col + 1] == None)):
+						return [row + 1, col - 1, row + 1, col + 1]
+
+					#If left space is empty but right has a piece
+					elif (board[row + 1][col - 1] == None):
+
+						# Test for jump possibility
+						if(board[row + 1][col + 1].color == "Red"):
+							if(row + 2 < 8 and col + 2 < 8):
+								if(board[row + 2][col + 2] == None):
+									return [row + 1, col - 1, row + 2, col + 2]
+
+						# If cant jump, just return empty space
+						return [row + 1, col - 1]
+
+					#If right space is empty but left has a piece
+					elif (board[row + 1][col + 1] == None):
+
+						if(board[row + 1][col - 1].color == "Red"):
+							if(row + 2 < 8 and col - 2 >= 0):
+								if(board[row + 2][col - 2] == None):
+									return [row + 1, col - 1, row + 2, col - 2]
+
+						return [row + 1, col + 1]
+					else:
+						# Test to see if either piece below black can be jumped
+
+
+						###THIS IS WHERE I LEFT OFF
+
+
+						# Might still be able to jump a piece
+						return [9]
+
+				elif (col - 1 >= 0):
+					# Piece on right side of board
+					if (board[row + 1][col - 1] ==  None):
+						return [row + 1, col - 1]
+					else:
+						return [9]
+				else:
+					# Piece on left side of board
+					if (board[row + 1][col + 1] ==  None):
+						return [row + 1, col + 1]
+					else:
+						return [9]
+
+
+		#else:
+			# Code for Red piece here
+	#else:
+		# Code for king possibility here
+		return 0
