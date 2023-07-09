@@ -1,22 +1,38 @@
 from tkinter import *
 
-
+# Creates Window
 root = Tk()
 
+# Sets Dimensions
 root.geometry("800x600")
 
+#Temp score
 team1score = 1
 team2score = 4
 
+
 def resetScore():
+	"""
+	This function is linked to the button 'Reset Score'
+	Updates 'scorePad' to say 0 - 0
+	No Parameters
+	"""
 	team1score = 0
 	team2score = 0
 	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=4, column = 9, columnspan=2)
 
 def resetGame():
+	"""
+	WIP
+
+	This function resets all piece positions to their original state
+	"""
 	root.destroy()
 
 def gameBuilder():
+	"""
+	This function builds the main game window; Board, Score Pad, Reset Score Button, Reset Game Button
+	"""
 	pieceSquare = False
 	for row in range(1,9):
 		
@@ -35,6 +51,7 @@ def gameBuilder():
 				Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
 				pieceSquare = True
 
+	#Creates all off-board labels and buttons and assigns buttons to functions when clicked 
 	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
 	scorePad.grid(row=4, column = 9, columnspan=2)
 	resetGameButton = Button(root, text="Reset Game")
@@ -43,14 +60,20 @@ def gameBuilder():
 	resetScoreButton.grid(row=5, column=10)
 	buffer = Label(root, text=" "*25)
 	buffer.grid(row=0)
+
+# Calling main window builder
 gameBuilder()
 
+# Activity loop
 root.mainloop()
 
 class Piece:
-	rank = "Pawn"
+
 	def __init__(self, color):
 		self.color = color
+
+		# Changed rank = "Pawn" to self.rank = "Pawn" in the initilizer so that it can be referenced correctly
+		self.rank = "Pawn"
 
 	def funk(self):
   		print("|" + self.color, end="")
@@ -67,8 +90,8 @@ board = [[blackPiece, None, blackPiece, None, blackPiece, None, blackPiece, None
  		 [redPiece, None, redPiece, None, redPiece, None, redPiece, None],
  		 [None, redPiece, None, redPiece, None, redPiece, None, redPiece]]
 
-for i in range (0, 8):
-	for j in range(0,8):
+for i in range (8):
+	for j in range(8):
 		if(board[i][j] == None):
 			print("| ", end="")
 		else:
