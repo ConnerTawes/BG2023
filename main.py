@@ -10,63 +10,6 @@ root.geometry("800x600")
 team1score = 1
 team2score = 4
 
-
-def resetScore():
-	"""
-	This function is linked to the button 'Reset Score'
-	Updates 'scorePad' to say 0 - 0
-	No Parameters
-	"""
-	team1score = 0
-	team2score = 0
-	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=4, column = 9, columnspan=2)
-
-def resetGame():
-	"""
-	WIP
-
-	This function resets all piece positions to their original state
-	"""
-	root.destroy()
-
-def gameBuilder():
-	"""
-	This function builds the main game window; Board, Score Pad, Reset Score Button, Reset Game Button
-	"""
-	pieceSquare = False
-	for row in range(1,9):
-		
-		if pieceSquare:
-			pieceSquare = False
-		else:
-			pieceSquare = True
-		for col in range(1,9):
-			if pieceSquare and row not in range(4,6):
-				if row >= 6:
-					Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2).grid(row=row, column=col)
-				else:
-					Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2).grid(row=row, column=col)
-				pieceSquare = False
-			else:
-				Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
-				pieceSquare = True
-
-	#Creates all off-board labels and buttons and assigns buttons to functions when clicked 
-	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
-	scorePad.grid(row=4, column = 9, columnspan=2)
-	resetGameButton = Button(root, text="Reset Game")
-	resetGameButton.grid(row=5, column=9)
-	resetScoreButton = Button(root, text="Reset Score", command= lambda: [scorePad.grid_forget(), resetScore()])
-	resetScoreButton.grid(row=5, column=10)
-	buffer = Label(root, text=" "*25)
-	buffer.grid(row=0)
-
-# Calling main window builder
-gameBuilder()
-
-# Activity loop
-root.mainloop()
-
 class Piece:
 
 	def __init__(self, color):
@@ -81,14 +24,14 @@ class Piece:
 redPiece = Piece("Red")
 blackPiece = Piece("Black")
 
-board = [[blackPiece, None, blackPiece, None, blackPiece, None, blackPiece, None],
-		 [None, blackPiece, None, blackPiece, None, blackPiece, None, blackPiece],
-		 [blackPiece, None, blackPiece, None, blackPiece, None, blackPiece, None],
-		 [None, None, None, None, None, None, None, None],
-		 [None, None, None, None, None, None, None, None],
- 		 [None, redPiece, None, redPiece, None, redPiece, None, redPiece],
- 		 [redPiece, None, redPiece, None, redPiece, None, redPiece, None],
- 		 [None, redPiece, None, redPiece, None, redPiece, None, redPiece]]
+board = [[blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
+		 [None,       blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece],
+		 [blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
+		 [None,       None,       None,       None,       None,       None,       None,       None],
+		 [None,       None,       None,       None,       None,       None,       None,       None],
+ 		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece],
+ 		 [redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece,   None],
+ 		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece]]
 
 for i in range (8):
 	for j in range(8):
@@ -158,4 +101,53 @@ def CanMove(row, col, piece):
 			# Code for Red piece here
 	#else:
 		# Code for king possibility here
-		return 0
+
+
+
+
+
+def resetScore():
+	"""
+	This function is linked to the button 'Reset Score'
+	Updates 'scorePad' to say 0 - 0
+	No Parameters
+	"""
+	team1score = 0
+	team2score = 0
+	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=4, column = 9, columnspan=2)
+
+def resetGame():
+	"""
+	WIP
+
+	This function resets all piece positions to their original state
+	"""
+	
+
+def gameBuilder():
+	"""
+	This function builds the main game window; Board, Score Pad, Reset Score Button, Reset Game Button
+	"""
+	for row in range(len(board)):
+		for col in range(len(board[0])):
+			if board[row][col] == blackPiece:
+				Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+			elif board[row][col] == redPiece:
+				Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+			else:
+				Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
+
+	#Creates all off-board labels and buttons and assigns buttons to functions when clicked 
+	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
+	scorePad.grid(row=4, column = 9, columnspan=2)
+	resetGameButton = Button(root, text="Reset Game")
+	resetGameButton.grid(row=5, column=9)
+	resetScoreButton = Button(root, text="Reset Score", command= lambda: [scorePad.grid_forget(), resetScore()])
+	resetScoreButton.grid(row=5, column=10)
+
+# Calling main window builder
+gameBuilder()
+
+# Activity loop
+root.mainloop()
+
