@@ -21,6 +21,7 @@ class Piece:
 	def funk(self):
   		print("|" + self.color, end="")
 
+
 redPiece = Piece("Red")
 blackPiece = Piece("Black")
 
@@ -41,16 +42,16 @@ for i in range (8):
 			board[i][j].funk()
 	print("")
 
-def CanMove(row, col, piece):
+def canMove(row, col, piece):
 	if(piece.rank == "Pawn"):
 		if(piece.color == "Black"):
 			# Code for Black piece here
-			if(row + 1 > 8):
+			if(row + 1 < 8):
 				if(col - 1 >= 0 and col + 1 < 8):
 
 					# If both down left and down right of black piece are empty
 					if((board[row + 1][col - 1] == None) and (board[row + 1][col + 1] == None)):
-						return [row + 1, col - 1, row + 1, col + 1]
+						return [(row + 1, col - 1), (row + 1, col + 1)]
 
 					#If left space is empty but right has a piece
 					elif (board[row + 1][col - 1] == None):
@@ -59,7 +60,7 @@ def CanMove(row, col, piece):
 						if(board[row + 1][col + 1].color == "Red"):
 							if(row + 2 < 8 and col + 2 < 8):
 								if(board[row + 2][col + 2] == None):
-									return [row + 1, col - 1, row + 2, col + 2]
+									return [(row + 1, col - 1), (row + 2, col + 2)]
 
 						# If cant jump, just return empty space
 						return [row + 1, col - 1]
@@ -70,9 +71,9 @@ def CanMove(row, col, piece):
 						if(board[row + 1][col - 1].color == "Red"):
 							if(row + 2 < 8 and col - 2 >= 0):
 								if(board[row + 2][col - 2] == None):
-									return [row + 1, col - 1, row + 2, col - 2]
+									return [(row + 1, col - 1), (row + 2, col - 2)]
 
-						return [row + 1, col + 1]
+						return [(row + 1, col + 1)]
 					else:
 						# Test to see if either piece below black can be jumped
 
@@ -81,27 +82,26 @@ def CanMove(row, col, piece):
 
 
 						# Might still be able to jump a piece
-						return [9]
+						return None
 
 				elif (col - 1 >= 0):
 					# Piece on right side of board
 					if (board[row + 1][col - 1] ==  None):
-						return [row + 1, col - 1]
+						return [(row + 1, col - 1)]
 					else:
-						return [9]
+						return None
 				else:
 					# Piece on left side of board
 					if (board[row + 1][col + 1] ==  None):
-						return [row + 1, col + 1]
+						return [(row + 1, col + 1)]
 					else:
-						return [9]
+						return None
 
 
 		#else:
 			# Code for Red piece here
 	#else:
 		# Code for king possibility here
-
 
 
 
@@ -122,20 +122,26 @@ def resetGame():
 
 	This function resets all piece positions to their original state
 	"""
-	
+	return 0
 
-def gameBuilder():
+def gameUpdate():
 	"""
 	This function builds the main game window; Board, Score Pad, Reset Score Button, Reset Game Button
 	"""
+	for widgets in root.winfo_children():
+		widgets.destroy()
 	for row in range(len(board)):
 		for col in range(len(board[0])):
 			if board[row][col] == blackPiece:
-				Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
 			elif board[row][col] == redPiece:
-				Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				b = Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
+			elif board[row][col] == "Available":
+				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2).grid(row=row, column=col)
 			else:
-				Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				b = Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
+
+
 
 	#Creates all off-board labels and buttons and assigns buttons to functions when clicked 
 	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
@@ -145,9 +151,34 @@ def gameBuilder():
 	resetScoreButton = Button(root, text="Reset Score", command= lambda: [scorePad.grid_forget(), resetScore()])
 	resetScoreButton.grid(row=5, column=10)
 
-# Calling main window builder
-gameBuilder()
+def showMoves(row, col, piece):
+	"""
+	This function will display the available moves of a clicked piece
+	"""
+	for i in range(len(board)):
+		for j in range(len(board[0])):
+			if board[i][j] == "Available":
+				board[i][j] = None
 
-# Activity loop
-root.mainloop()
+	
+	for i in canMove(row, col, piece):
+		print((i[0], i[1]))
+		board[i[0]][i[1]] = "Available"
 
+	gameUpdate()
+		
+
+	
+
+def main():
+	# Calling main window builder
+	gameUpdate()
+
+	
+
+	# Activity loop
+	root.mainloop()
+
+
+if __name__ == "__main__":
+	main()
