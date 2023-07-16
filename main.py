@@ -7,8 +7,11 @@ root = Tk()
 root.geometry("800x600")
 
 #Temp score
-team1score = 1
-team2score = 4
+team0score = 1
+team1score = 4
+
+turn = 0
+lastClicked = None
 
 class Piece:
 
@@ -153,7 +156,28 @@ def canMove(row, col, piece):
 	# 	# Code for king possibility here
 	# 	if(piece.color == "Black"):
 
+def movePiece(row, col):
+	global turn
+	if turn == 0:
+		board[row][col] = redPiece
+		turn = 1
+	else:
+		board[row][col] = blackPiece
+		turn = 0
 
+	board[lastClicked[0]][lastClicked[1]] = None
+	#if turn == 0:
+	#	if row - lastClicked[0] is in (2,-2):
+	#		if col - lastClicked[1] == 2:
+	#			board[row-][col-1] = None
+
+
+	for i in range(len(board)):
+		for j in range(len(board[0])):
+			if board[i][j] == "Available":
+				board[i][j] = None
+
+	gameUpdate()
 
 
 
@@ -163,9 +187,9 @@ def resetScore():
 	Updates 'scorePad' to say 0 - 0
 	No Parameters
 	"""
+	team0score = 0
 	team1score = 0
-	team2score = 0
-	scorePad = Label(root, text=f"Score: {team1score} - {team2score}").grid(row=4, column = 9, columnspan=2)
+	scorePad = Label(root, text=f"Score: {team0score} - {team1score}").grid(row=4, column = 9, columnspan=2)
 
 def resetGame():
 	"""
@@ -184,18 +208,24 @@ def gameUpdate():
 	for row in range(len(board)):
 		for col in range(len(board[0])):
 			if board[row][col] == blackPiece:
-				b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
+				if turn == 1:
+					b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
+				else:
+					b = Button(root, text=str(row) + str(col), bg="gray", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
 			elif board[row][col] == redPiece:
-				b = Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
+				if turn == 0:
+					b = Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
+				else:
+					b = Button(root, text=str(row) + str(col), bg="red", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
 			elif board[row][col] == "Available":
-				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2).grid(row=row, column=col)
+				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:movePiece(row,col)).grid(row=row, column=col)
 			else:
 				b = Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
 
 
 
 	#Creates all off-board labels and buttons and assigns buttons to functions when clicked 
-	scorePad = Label(root, text=f"Score: {team1score} - {team2score}")
+	scorePad = Label(root, text=f"Score: {team0score} - {team1score}")
 	scorePad.grid(row=4, column = 9, columnspan=2)
 	resetGameButton = Button(root, text="Reset Game")
 	resetGameButton.grid(row=5, column=9)
@@ -206,6 +236,10 @@ def showMoves(row, col, piece):
 	"""
 	This function will display the available moves of a clicked piece
 	"""
+	global lastClicked
+
+	lastClicked = (row, col)
+
 	for i in range(len(board)):
 		for j in range(len(board[0])):
 			if board[i][j] == "Available":
@@ -213,7 +247,7 @@ def showMoves(row, col, piece):
 
 	
 	for i in canMove(row, col, piece):
-		if(i is not None):
+		if i is not None:
 			print((i[0], i[1]))
 			board[i[0]][i[1]] = "Available"
 
