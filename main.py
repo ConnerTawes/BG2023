@@ -42,6 +42,35 @@ for i in range (8):
 			board[i][j].funk()
 	print("")
 
+def testBlackLeft(row, col):
+	if(board[row + 1][col - 1].color == "Red"):
+		if(row + 2 < 8 and col - 2 < 8):
+			if(board[row + 2][col - 2] == None):
+				return[(row + 2, col - 2)]
+	return None
+
+def testBlackRight(row, col):
+	if(board[row + 1][col + 1].color == "Red"):
+		if(row + 2 < 8 and col + 2 < 8):
+			if(board[row + 2][col + 2] == None):
+				return[(row + 2, col + 2)]
+	return None
+
+def testRedLeft(row, col):
+	if(board[row - 1][col - 1].color == "Black"):
+		if(row - 2 < 8 and col - 2 < 8):
+			if(board[row - 2][col - 2] == None):
+				return[(row - 2, col - 2)]
+	return None
+
+def testRedRight(row, col):
+	if(board[row - 1][col + 1].color == "Black"):
+		if(row - 2 < 8 and col + 2 < 8):
+			if(board[row - 2][col + 2] == None):
+				return[(row - 2, col + 2)]
+	return None
+
+
 def canMove(row, col, piece):
 	if(piece.rank == "Pawn"):
 		if(piece.color == "Black"):
@@ -76,25 +105,49 @@ def canMove(row, col, piece):
 						return [(row + 1, col + 1)]
 					else:
 						# Test to see if either piece below black can be jumped
+						if(board[row + 1][col - 1].color == "Red"):
+							if(row + 2 < 8 and col - 2 >= 0):
+								if(board[row + 2][col - 2] == None):
 
+									if(board[row + 1][col + 1].color == "Red"):
+										if(row + 2 < 8 and col + 2 >= 0):
+											if(board[row + 2][col + 2] == None):
+												# Both pieces can be jumped
+												return [(row + 2, col - 2), (row + 2, col - 2)]
+								# Only left piece can be jumped
+								return [(row + 2, col - 2)]
 
-						###THIS IS WHERE I LEFT OFF
+						if(board[row + 1][col + 1].color == "Red"):
+							if(row + 2 < 8 and col + 2 >= 0):
+								if(board[row + 2][col + 2] == None):
+									# Only right piece can be jumped
+									return [(row + 2, col + 2)]
 
-
-						# Might still be able to jump a piece
+						# No pieces can be jumped
 						return None
+
 
 				elif (col - 1 >= 0):
 					# Piece on right side of board
 					if (board[row + 1][col - 1] ==  None):
 						return [(row + 1, col - 1)]
 					else:
+						if(board[row + 1][col - 1].color == "Red"):
+							if(row + 2 < 8):
+								if(board[row + 2][col - 2] == None):
+									return[(row + 2, col - 2)]
+
 						return None
 				else:
 					# Piece on left side of board
 					if (board[row + 1][col + 1] ==  None):
 						return [(row + 1, col + 1)]
 					else:
+						if(board[row + 1][col + 1].color == "Red"):
+							if(row + 2 < 8):
+								if(board[row + 2][col + 2] == None):
+									return[(row + 2, col + 2)]
+
 						return None
 
 
@@ -182,3 +235,7 @@ def main():
 
 if __name__ == "__main__":
 	main()
+
+# NATHAN!!! I NEED YOUR HELP
+# I'm not sure how return statements work with my move functions
+# Please help when you get the chance
