@@ -160,16 +160,21 @@ def movePiece(row, col):
 	global turn
 	if turn == 0:
 		board[row][col] = redPiece
+		piece = redPiece
 		turn = 1
 	else:
 		board[row][col] = blackPiece
+		piece = blackPiece
 		turn = 0
 
 	board[lastClicked[0]][lastClicked[1]] = None
-	#if turn == 0:
-	#	if row - lastClicked[0] is in (2,-2):
-	#		if col - lastClicked[1] == 2:
-	#			board[row-][col-1] = None
+
+	# Removes a jumped piece
+	if (lastClicked[0] - row) in (-2,2):
+
+		jumpedRow = (row - lastClicked[0]) // 2
+		jumpedCol = (col - lastClicked[1]) // 2
+		board[row-jumpedRow][col-jumpedCol] = None
 
 
 	for i in range(len(board)):
