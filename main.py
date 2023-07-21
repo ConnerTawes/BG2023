@@ -22,7 +22,7 @@ class Piece:
 		self.rank = "Pawn"
 
 	def prin(self):
-  		print("|" + self.color, end="")
+  		print("|" + self.color + " " + self.rank, end="")
 
 	def promote(self):
   		self.rank = "King"
@@ -30,16 +30,28 @@ class Piece:
 
 redPiece = Piece("Red")
 blackPiece = Piece("Black")
+KB = Piece("Black")
+KB.promote()
+KR = Piece("Red")
+KR.promote()
 
-board = [[blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
-		 [None,       blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece],
-		 [blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
-		 [None,       None,       None,       redPiece,       None,       None,       None,       None],
-		 [None,       None,       None,       None,       blackPiece,       None,       None,       None],
- 		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece],
- 		 [redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece,   None],
- 		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece]]
+# board = [[blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
+# 		 [None,       blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece],
+# 		 [blackPiece, None,       blackPiece, None,       blackPiece, None,       blackPiece, None],
+# 		 [None,       None,       None,       redPiece,       None,       None,       None,       None],
+# 		 [None,       None,       None,       None,       blackPiece,       None,       None,       None],
+#  		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece],
+#  		 [redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece,   None],
+#  		 [None,       redPiece,   None,       redPiece,   None,       redPiece,   None,       redPiece]]
 
+board = [[None, None, None, None, None, None, None, None],
+		[None, blackPiece, None, blackPiece, None, None, None, None],		 
+		[None, None, KR, None, None, None, None, None],		
+		[None, blackPiece, None, blackPiece, None, None, None, None],		 
+		[None, None, None, None, redPiece, None, redPiece, None],		
+		[None, None, None, None, None, KB, None, None], 		 
+		[None, None, None, None, redPiece, None, redPiece, None],		
+		[redPiece, None, None, None, None, None, None, None]]
 for i in range (8):
 	for j in range(8):
 		if(board[i][j] == None):
@@ -72,7 +84,7 @@ def testRedRight(row, col):
 			if(board[row - 2][col + 2] == None):
 				return(row - 2, col + 2)
 
-def testBlackBelow(row, col):
+def testBlackPawn(row, col):
 	if(row + 1 < 8):
 		if(col - 1 >= 0 and col + 1 < 8):
 
@@ -106,8 +118,8 @@ def testBlackBelow(row, col):
 			else:
 				return[testBlackRight(row, col)]
 
-def testRedBelow(row, col):
-	if(row - 1 >=0):
+def testRedPawn(row, col):
+	if(row - 1 >= 0):
 		if(col - 1 >= 0 and col + 1 < 8):
 
 			# If both up left and up right of red piece are empty
@@ -140,21 +152,58 @@ def testRedBelow(row, col):
 			else:
 				return[testRedRight(row, col)]
 
+def testKing(row, col, piece):
+	rtn = []
+	if(row - 1 >= 0):
+		if(col - 1 >= 0):
+			if(board[row - 1][col - 1] == None):
+				rtn.append((row - 1), (col - 1))
+			else:
+				if(piece.color is not board[row - 1][col - 1].color):
+					if(row - 2 >= 0 and col - 2 >= 0):
+						if(board[row - 2][col - 2] is None):
+							rtn.append((row - 2, col - 2))
+		if(col + 1 < 8):
+			if(board[row - 1][col + 1] == None):
+				rtn.append((row - 1, col + 1))
+			else:
+				if(piece.color is not board[row - 1][col + 1].color):
+					if(row - 2 >= 0 and col + 2 < 8):
+						if(board[row - 2][col + 2] is None):
+							rtn.append((row - 2, col + 2))
+	if(row + 1 < 8):
+		if(col - 1 >= 0):
+			if(board[row + 1][col - 1] == None):
+				rtn.append((row + 1, col - 1))
+			else:
+				if(piece.color is not board[row + 1][col - 1].color):
+					if(row + 2 < 8 and col - 2 >= 0):
+						if(board[row + 2][col - 2] is None):
+							rtn.append((row + 2, col - 2))
+		if(col + 1 < 8):
+			if(board[row + 1][col + 1] == None):
+				rtn.append((row + 1,col + 1))
+			else:
+				if(piece.color is not board[row + 1][col + 1].color):
+					if(row + 2 < 8 and col + 2 < 8):
+						if(board[row + 2][col + 2] is None):
+							rtn.append((row + 2,col + 2))
+	return rtn if rtn else None
 
-def canMove(row, col, piece):
-	if(piece.rank == "Pawn"):
-		if(piece.color == "Black"):
-			return testBlackBelow(row, col)
+
+
+
+def canMove(row, col):
+	print(row, col, board[row][col].rank)
+	if(board[row][col].rank == "Pawn"):
+		if(board[row][col].color == "Black"):
+			return testBlackPawn(row, col)
 		else:
-			return testRedBelow(row, col)
+			return testRedPawn(row, col)
 
 	# Piece must be a king
-	
-			
-
-	# else:
-	# 	# Code for king possibility here
-	# 	if(piece.color == "Black"):
+	print(testKing(row, col, board[row][col]))
+	return testKing(row, col, board[row][col])
 
 def movePiece(row, col):
 	global turn
@@ -176,7 +225,7 @@ def movePiece(row, col):
 		jumpedCol = (col - lastClicked[1]) // 2
 		board[row-jumpedRow][col-jumpedCol] = None
 
-
+	print
 	for i in range(len(board)):
 		for j in range(len(board[0])):
 			if board[i][j] == "Available":
@@ -212,18 +261,18 @@ def gameUpdate():
 		widgets.destroy()
 	for row in range(len(board)):
 		for col in range(len(board[0])):
-			if board[row][col] == blackPiece:
-				if turn == 1:
-					b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
-				else:
-					b = Button(root, text=str(row) + str(col), bg="gray", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
-			elif board[row][col] == redPiece:
+			if board[row][col] == "Available":
+				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:movePiece(row,col)).grid(row=row, column=col)
+			elif board[row][col] is not None and board[row][col].color == "Red":
 				if turn == 0:
 					b = Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
 				else:
 					b = Button(root, text=str(row) + str(col), bg="red", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
-			elif board[row][col] == "Available":
-				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:movePiece(row,col)).grid(row=row, column=col)
+			elif board[row][col] is not None and board[row][col].color == "Black":
+				if turn == 1:
+					b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
+				else:
+					b = Button(root, text=str(row) + str(col), bg="gray", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
 			else:
 				b = Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
 
@@ -251,7 +300,7 @@ def showMoves(row, col, piece):
 				board[i][j] = None
 
 	
-	for i in canMove(row, col, piece):
+	for i in canMove(row, col):
 		if i is not None:
 			print((i[0], i[1]))
 			board[i[0]][i[1]] = "Available"
