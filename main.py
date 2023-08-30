@@ -1,4 +1,5 @@
 from tkinter import *
+from PIL import ImageTk, Image
 
 # Creates Window
 root = Tk()
@@ -6,10 +7,35 @@ root = Tk()
 # Sets Dimensions
 root.geometry("800x600")
 
+# Opening Images
+board_edge = Image.open("edge.png")
+
+board_corner = Image.open("corner.png")
+
+board_tile = Image.open("tile.png")
+
+black_king = Image.open("black_king.png")
+resize_black_king = black_king.resize((60,60))
+black_king_picture = ImageTk.PhotoImage(resize_black_king)
+
+black_pawn = Image.open("black_pawn.png")
+resize_black_pawn = black_pawn.resize((60,60))
+black_pawn_picture = ImageTk.PhotoImage(resize_black_pawn)
+
+white_king = Image.open("white_king.png")
+resize_white_king = white_king.resize((60,60))
+white_king_picture = ImageTk.PhotoImage(resize_white_king)
+
+white_pawn = Image.open("white_pawn.png")
+resize_white_pawn = white_pawn.resize((60,60))
+white_pawn_picture = ImageTk.PhotoImage(resize_white_pawn)
+
+
+
 #Temp score
 team0score = 1
 team1score = 4
-#asd
+
 turn = -1
 lastClicked = None
 
@@ -296,14 +322,14 @@ def gameUpdate():
 				b = Button(root, text=str(row) + str(col), bg="blue", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:movePiece(row,col)).grid(row=row, column=col)
 			elif board[row][col] is not None and board[row][col].color == "Red":
 				if turn == -1:
-					b = Button(root, text=str(row) + str(col), bg="red", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
+					b = Button(root, image = white_pawn_picture, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
 				else:
-					b = Button(root, text=str(row) + str(col), bg="red", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
+					b = Button(root, image = white_pawn_picture, state=DISABLED, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,redPiece)).grid(row=row, column=col)
 			elif board[row][col] is not None and board[row][col].color == "Black":
 				if turn == 1:
-					b = Button(root, text=str(row) + str(col), bg="gray", width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
+					b = Button(root, image = black_pawn_picture, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
 				else:
-					b = Button(root, text=str(row) + str(col), bg="gray", state=DISABLED, width=8, height=4, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
+					b = Button(root, image = black_pawn_picture, state=DISABLED, borderwidth=2, command=lambda row=row,col=col:showMoves(row,col,blackPiece)).grid(row=row, column=col)
 			else:
 				b = Button(root, text=str(row) + str(col), state=DISABLED, width=8, height=4, borderwidth=2).grid(row=row, column=col)
 
