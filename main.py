@@ -9,7 +9,7 @@ root.geometry("800x600")
 #Temp score
 team0score = 1
 team1score = 4
-
+#asd
 turn = -1
 lastClicked = None
 
